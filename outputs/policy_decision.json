@@ -1,0 +1,6 @@
+{
+  "semantic_winner": "doc_002",
+  "policy_winner": "doc_001",
+  "flipped": true,
+  "reason": "Policy weighting overrode semantic similarity"
+}
