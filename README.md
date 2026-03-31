@@ -4,7 +4,7 @@ RISWIS Applied is a governance layer that controls and exposes ranking decisions
 
 It controls what the system sees before generation and makes ranking decisions visible, inspectable, and auditable.
 
-This is not a model.
+This is not a model.  
 This is not a replacement for RAG.
 
 RISWIS Applied sits between retrieval and generation and makes ranking behavior explicit.
@@ -13,22 +13,43 @@ RISWIS Applied sits between retrieval and generation and makes ranking behavior 
 
 ## Run It (Quick Start)
 
-### 1. Create environment
+### 1. Clone the repository
 
-python -m venv .venv
-..venv\Scripts\Activate.ps1
+git clone https://github.com/ebysslabscodes/riswis-applied.git  
+cd riswis-applied
 
-### 2. Install dependencies
+### 2. Create environment
+
+python -m venv .venv  
+.\.venv\Scripts\Activate.ps1
+
+### 3. Install dependencies
 
 pip install -r requirements.txt
 
-### 3. Ingest documents
+### 4. Ingest documents
 
 python ingest.py
 
-### 4. Run query
+### 5. Run query
 
 python main.py --query "feeling tired all the time"
+
+---
+
+## What You’ll See
+
+Each result includes:
+
+- raw_rank → semantic similarity ranking  
+- weighted_rank → after policy weighting  
+- delta → movement caused by policy  
+
+You will also see:
+
+- whether a rank flip occurred  
+- which document won (semantic vs policy)  
+- why the decision was made  
 
 ---
 
@@ -40,8 +61,8 @@ The selection step — what gets chosen and why — is usually hidden.
 
 RISWIS Applied separates two things:
 
-* semantic similarity (what matches the query)
-* policy weighting (what should be prioritized)
+- semantic similarity (what matches the query)  
+- policy weighting (what should be prioritized)  
 
 Both remain visible.
 
@@ -55,10 +76,10 @@ RISWIS introduces a Governance Retrieval Layer (GRL) between retrieval and gener
 
 The GRL:
 
-* applies structured weighting based on source tiers
-* reorders results based on policy
-* exposes ranking changes before generation
-* produces auditable outputs
+- applies structured weighting based on source tiers  
+- reorders results based on policy  
+- exposes ranking changes before generation  
+- produces auditable outputs  
 
 ---
 
@@ -66,10 +87,10 @@ The GRL:
 
 For each query, RISWIS Applied:
 
-* retrieves documents using semantic similarity
-* applies policy weighting using tier multipliers
-* produces a final ranked list
-* records what changed and why
+- retrieves documents using semantic similarity  
+- applies policy weighting using tier multipliers  
+- produces a final ranked list  
+- records what changed and why  
 
 Outputs are deterministic and inspectable.
 
@@ -93,9 +114,9 @@ This exposes when policy overrides similarity.
 
 Each run produces three files:
 
-* ranked_results.json
-* policy_decision.json
-* run_summary.json
+- ranked_results.json  
+- policy_decision.json  
+- run_summary.json  
 
 These are the only outputs. No intermediate or temporary artifacts are stored.
 
@@ -111,10 +132,10 @@ RISWIS Applied makes these decisions explicit and inspectable before generation.
 
 This allows:
 
-* inspection of ranking behavior
-* verification of policy influence
-* auditability before generation
-* controlled integration into existing systems
+- inspection of ranking behavior  
+- verification of policy influence  
+- auditability before generation  
+- controlled integration into existing systems  
 
 ---
 
@@ -122,17 +143,17 @@ This allows:
 
 RISWIS Applied is not:
 
-* a model
-* a retrieval system
-* a search engine
+- a model  
+- a retrieval system  
+- a search engine  
 
 RISWIS Applied is:
 
-* a governance layer
-* a ranking control system
-* a visibility layer for retrieval behavior
+- a governance layer  
+- a ranking control system  
+- a visibility layer for retrieval behavior  
 
-It can be used alongside existing retrieval systems without replacing them.
+It works alongside existing retrieval systems without replacing them.
 
 ---
 
@@ -140,29 +161,21 @@ It can be used alongside existing retrieval systems without replacing them.
 
 RISWIS Applied is data-agnostic.
 
-It does not include bundled datasets.
-
 Users provide:
 
-* documents
-* tier assignments
-* policy configuration
-
----
-
-## Example Use
-
-python main.py --query "causes of chronic fatigue"
+- documents  
+- tier assignments  
+- policy configuration  
 
 ---
 
 ## Design Principles
 
-* visibility over opacity
-* control over automation
-* deterministic outputs
-* minimal storage
-* integration over replacement
+- visibility over opacity  
+- control over automation  
+- deterministic outputs  
+- minimal storage  
+- integration over replacement  
 
 ---
 
@@ -176,14 +189,14 @@ numpy<2
 
 Then reinstall:
 
-pip uninstall -y numpy chromadb chroma-hnswlib
+pip uninstall -y numpy chromadb chroma-hnswlib  
 pip install -r requirements.txt
 
 ---
 
 ### Chroma database errors
 
-If you see errors during ingest or query (SQLite / seq_id / TypeError):
+If you see errors during ingest or query:
 
 Delete the local vector store:
 
@@ -199,15 +212,15 @@ python ingest.py
 
 RISWIS Applied focuses on:
 
-* ranking visibility
-* policy influence
-* controlled output
+- ranking visibility  
+- policy influence  
+- controlled output  
 
 It does not include:
 
-* model training
-* generation logic
-* external APIs
+- model training  
+- generation logic  
+- external APIs  
 
 ---
 
@@ -221,11 +234,18 @@ Initial product build focused on establishing core behavior and observable ranki
 
 RISWIS Applied controls what the system sees before it answers.
 
-It makes ranking decisions visible.
+It makes ranking decisions visible.  
 It makes policy influence measurable.
 
 ---
 
 ## License
 
-To be defined.
+Licensed under the Ebysslabs Ethical Use License v1.1  
+(CC BY-ND 4.0 base with additional restrictions)
+
+- No military use  
+- No surveillance use  
+- No law enforcement use  
+
+© 2026 Ronald Reed (Ebysslabs)
