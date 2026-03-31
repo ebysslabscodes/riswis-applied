@@ -13,6 +13,13 @@ RISWIS Applied sits between retrieval and generation and makes ranking behavior 
 
 ---
 
+## Requirements
+
+Python 3.10–3.11 recommended  
+Python 3.13 is not supported due to dependency limitations (NumPy / PyTorch)
+
+---
+
 ## Run It (Quick Start)
 
 ### 1. Clone the repository
@@ -20,9 +27,9 @@ RISWIS Applied sits between retrieval and generation and makes ranking behavior 
 git clone https://github.com/ebysslabscodes/riswis-applied.git
 cd riswis-applied
 
-### 2. Create environment
+### 2. Create environment (Python 3.11 recommended)
 
-python -m venv .venv
+py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
 ### 3. Install dependencies
@@ -199,8 +206,6 @@ pip install -r requirements.txt
 
 If you see errors during ingest or query:
 
-Delete the local vector store:
-
 Remove-Item -Recurse -Force .\chroma_db
 
 Then rebuild:
@@ -237,7 +242,7 @@ Designed for integration into existing retrieval systems.
 
 RISWIS Applied controls what the system sees before it answers.
 
-It makes ranking decisions visible.
+It makes ranking decisions visible.  
 It makes policy influence measurable.
 
 ---
