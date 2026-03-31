@@ -1,22 +1,46 @@
 # RISWIS Applied
 
-semantic winner ≠ policy winner
+**semantic winner ≠ policy winner**
 
 RISWIS Applied is a governance layer that controls and exposes ranking decisions in retrieval systems.
 
 It determines what the system sees before generation and makes ranking decisions visible, inspectable, and auditable.
 
-This is not a model.
-This is not a replacement for RAG.
+**This is not a model.**  
+**This is not a replacement for RAG.**
 
 RISWIS Applied sits between retrieval and generation and makes ranking behavior explicit.
 
 ---
 
+## What It Does
+
+RISWIS Applied:
+
+- retrieves documents using semantic similarity
+- applies policy weighting using tier multipliers
+- produces a final ranked list
+- records what changed and why
+
+Outputs are deterministic and inspectable.
+
+---
+
+## Where It Fits
+
+Data → Retrieval → RISWIS (GRL) → LLM → Output
+
+RISWIS introduces a **Governance Retrieval Layer (GRL)** between retrieval and generation.
+
+---
+
 ## Requirements
 
-Python 3.10–3.11 recommended  
-Python 3.13 is not supported due to dependency limitations (NumPy / PyTorch)
+- **Python 3.11 required**
+- Python 3.13 is **not supported**
+
+If anything fails during setup, delete `.venv` and start over.  
+Do not reuse a broken environment.
 
 ---
 
@@ -24,23 +48,71 @@ Python 3.13 is not supported due to dependency limitations (NumPy / PyTorch)
 
 ### 1. Clone the repository
 
-git clone https://github.com/ebysslabscodes/riswis-applied.git
+git clone https://github.com/ebysslabscodes/riswis-applied.git  
 cd riswis-applied
 
-### 2. Create environment (Python 3.11 recommended)
+---
+
+### 2. Check installed Python versions
+
+py -0
+
+You should see:
+
+-3.11
+
+If 3.11 is not listed, install it first:  
+https://www.python.org/downloads/
+
+---
+
+### 3. Create virtual environment (FORCE Python 3.11)
 
 py -3.11 -m venv .venv
+
+---
+
+### 4. Activate environment
+
 .\.venv\Scripts\Activate.ps1
 
-### 3. Install dependencies
+You should now see:
+
+(.venv) PS C:\...
+
+---
+
+### 5. Verify Python version (CRITICAL)
+
+python --version
+
+Must show:
+
+Python 3.11.x
+
+If not → delete `.venv` and restart.
+
+---
+
+### 6. Upgrade pip
+
+python -m pip install --upgrade pip
+
+---
+
+### 7. Install dependencies
 
 pip install -r requirements.txt
 
-### 4. Ingest documents
+---
+
+### 8. Ingest documents
 
 python ingest.py
 
-### 5. Run query
+---
+
+### 9. Run query
 
 python main.py --query "feeling tired all the time"
 
@@ -62,88 +134,79 @@ You can directly observe:
 
 ---
 
-## Core Idea
-
-Most systems retrieve information and pass it directly into a model.
-
-The selection step — what gets chosen and why — is usually hidden.
-
-RISWIS Applied separates two components:
-
-- semantic similarity (what matches the query)
-- policy weighting (what should be prioritized)
-
-Both remain visible.
-
----
-
-## Where It Fits
-
-Data → Retrieval → RISWIS (GRL) → LLM → Output
-
-RISWIS introduces a Governance Retrieval Layer (GRL) between retrieval and generation.
-
-The GRL:
-
-- applies structured weighting based on source tiers
-- reorders results according to policy
-- exposes ranking changes before generation
-- produces auditable outputs
-
----
-
-## What It Does
-
-For each query, RISWIS Applied:
-
-- retrieves documents using semantic similarity
-- applies policy weighting using tier multipliers
-- produces a final ranked list
-- records what changed and why
-
-Outputs are deterministic and inspectable.
-
----
-
 ## Example Behavior
 
 A document may rank #1 by similarity but drop to #2 after policy is applied.
 
 Another document may move from #2 to #1 due to higher trust weighting.
 
-RISWIS makes this movement visible:
-
 raw_rank → weighted_rank → delta
-
-This shows when policy overrides similarity.
 
 ---
 
 ## Output
 
-Each run produces three files:
+Each run produces:
 
 - ranked_results.json
 - policy_decision.json
 - run_summary.json
 
-No intermediate or temporary artifacts are stored.
+No intermediate artifacts are stored.
 
 ---
 
-## Why It Exists
+## Core Idea
 
-Ranking decisions happen before a system generates an answer.
+RISWIS Applied separates:
 
-Those decisions are usually hidden.
+- semantic similarity → what matches
+- policy weighting → what should win
 
-RISWIS Applied makes them visible before generation.
+Both remain visible.
 
-You can see exactly:
+---
 
-- what was selected
-- what changed
-- why it changed
+## Troubleshooting
+
+### Setup failed
+
+Start clean:
+
+Remove-Item -Recurse -Force .\.venv
+
+Then rebuild:
+
+py -3.11 -m venv .venv  
+.\.venv\Scripts\Activate.ps1  
+python --version  
+pip install -r requirements.txt  
+
+---
+
+### Wrong Python version
+
+python --version
+
+If not 3.11 → delete `.venv` and recreate it.
+
+---
+
+### ModuleNotFoundError
+
+Environment is broken. Reset it:
+
+Remove-Item -Recurse -Force .\.venv  
+py -3.11 -m venv .venv  
+.\.venv\Scripts\Activate.ps1  
+pip install -r requirements.txt  
+
+---
+
+### Chroma errors
+
+Remove-Item -Recurse -Force .\chroma_db  
+python ingest.py  
 
 ---
 
@@ -159,82 +222,7 @@ RISWIS Applied is:
 
 - a governance layer
 - a ranking control system
-- a visibility layer for retrieval behavior
-
-It integrates with existing retrieval systems without replacing them.
-
----
-
-## Data
-
-RISWIS Applied is data-agnostic.
-
-Users provide:
-
-- documents
-- tier assignments
-- policy configuration
-
----
-
-## Design Principles
-
-- visibility over opacity
-- control over automation
-- deterministic outputs
-- minimal storage
-- integration over replacement
-
----
-
-## Troubleshooting
-
-### NumPy error (np.float_)
-
-If you see an error related to np.float_, ensure NumPy is pinned:
-
-numpy<2
-
-Then reinstall:
-
-pip uninstall -y numpy chromadb chroma-hnswlib
-pip install -r requirements.txt
-
----
-
-### Chroma database errors
-
-If you see errors during ingest or query:
-
-Remove-Item -Recurse -Force .\chroma_db
-
-Then rebuild:
-
-python ingest.py
-
----
-
-## Current Scope
-
-RISWIS Applied focuses on:
-
-- ranking visibility
-- policy influence
-- controlled output
-
-It does not include:
-
-- model training
-- generation logic
-- external APIs
-
----
-
-## Status
-
-Stable core behavior.
-
-Designed for integration into existing retrieval systems.
+- a visibility layer
 
 ---
 
@@ -252,8 +240,8 @@ It makes policy influence measurable.
 Licensed under the Ebysslabs Ethical Use License v1.1  
 (CC BY-ND 4.0 base with additional restrictions)
 
-- No military use
-- No surveillance use
-- No law enforcement use
+- No military use  
+- No surveillance use  
+- No law enforcement use  
 
 © 2026 Ronald Reed (Ebysslabs)
