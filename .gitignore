@@ -1,4 +1,20 @@
+# Python
 __pycache__/
 *.pyc
+
+# Environments
 .env
 .venv/
+
+# Chroma / vector DB (CRITICAL)
+chroma_db/
+
+# Outputs (generated files)
+outputs/
+
+# Local runtime files
+last_ingest.txt
+
+# OS junk (optional but clean)
+.DS_Store
+Thumbs.db
