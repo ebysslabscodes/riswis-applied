@@ -15,6 +15,9 @@ outputs/
 # Local runtime files
 last_ingest.txt
 
-# OS junk (optional but clean)
+# Old / test data (keep repo clean)
+data/docs/old_docs/
+
+# OS junk
 .DS_Store
 Thumbs.db
