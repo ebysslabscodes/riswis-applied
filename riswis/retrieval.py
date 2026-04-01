@@ -1,3 +1,7 @@
+import os
+
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
 from typing import Dict, List
 
 import chromadb
@@ -13,6 +17,7 @@ client = chromadb.Client(
     Settings(
         is_persistent=True,
         persist_directory="./chroma_db",
+        anonymized_telemetry=False,
     )
 )
 

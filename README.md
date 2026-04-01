@@ -27,9 +27,7 @@ Outputs are deterministic and inspectable.
 
 ## Where It Fits
 
-```
 Data → Retrieval → RISWIS (GRL) → LLM → Output
-```
 
 RISWIS introduces a **Governance Retrieval Layer (GRL)** between retrieval and generation.
 
@@ -37,11 +35,12 @@ RISWIS introduces a **Governance Retrieval Layer (GRL)** between retrieval and g
 
 ## Requirements
 
-- **Python 3.11 required**
-- Python 3.13 is **not supported**
+- **Python 3.11 recommended**
+- **Python 3.12 supported**
+- **Python 3.13 may work but is not officially supported**
 
-If anything fails during setup, delete `.venv` and start over.  
-Do not reuse a broken environment.
+If setup fails, recreate the environment using Python 3.11.  
+Do not reuse a broken `.venv`.
 
 ---
 
@@ -62,26 +61,58 @@ cd riswis-applied
 py -0
 ```
 
-You should see:
+You should see one or more of these:
 
 ```
 -3.11
+-3.12
+-3.13
 ```
 
-If 3.11 is not listed, install it first:  
+---
+
+### 3. If Python is not installed on Windows
+
+Install Python 3.11 (recommended):
+
+```powershell
+winget install Python.Python.3.11
+```
+
+Install Python 3.12:
+
+```powershell
+winget install Python.Python.3.12
+```
+
+If `winget` is unavailable, install Python from:  
 https://www.python.org/downloads/
 
 ---
 
-### 3. Create virtual environment (FORCE Python 3.11)
+### 4. Create virtual environment
+
+**Recommended (Python 3.11):**
 
 ```powershell
 py -3.11 -m venv .venv
 ```
 
+**Supported (Python 3.12):**
+
+```powershell
+py -3.12 -m venv .venv
+```
+
+**Python 3.13 may work but is not officially supported:**
+
+```powershell
+py -3.13 -m venv .venv
+```
+
 ---
 
-### 4. Activate environment
+### 5. Activate environment
 
 **Windows:**
 
@@ -103,23 +134,25 @@ You should now see:
 
 ---
 
-### 5. Verify Python version (CRITICAL)
+### 6. Verify Python version
 
 ```powershell
 python --version
 ```
 
-Must show:
+Expected examples:
 
 ```
 Python 3.11.x
+Python 3.12.x
+Python 3.13.x
 ```
 
-If not → delete `.venv` and restart.
+If setup fails on 3.12 or 3.13, recreate the environment using Python 3.11.
 
 ---
 
-### 6. Upgrade pip
+### 7. Upgrade pip
 
 ```powershell
 python -m pip install --upgrade pip
@@ -127,7 +160,7 @@ python -m pip install --upgrade pip
 
 ---
 
-### 7. Install dependencies
+### 8. Install dependencies
 
 ```powershell
 pip install -r requirements.txt
@@ -135,7 +168,7 @@ pip install -r requirements.txt
 
 ---
 
-### 8. Ingest documents
+### 9. Ingest documents
 
 ```powershell
 python ingest.py
@@ -143,10 +176,18 @@ python ingest.py
 
 ---
 
-### 9. Run query
+### 10. Run queries
+
+General phrasing:
 
 ```powershell
 python main.py --query "feeling tired all the time"
+```
+
+Trust-sensitive phrasing:
+
+```powershell
+python main.py --query "trusted medical advice for fatigue"
 ```
 
 ---
@@ -175,33 +216,67 @@ You can directly observe:
 
 ---
 
+## Example Query Behavior
+
+Behavior depends on query phrasing and source weighting.
+
+### Query 1 — General phrasing
+
+```powershell
+python main.py --query "feeling tired all the time"
+```
+
+Typical observed behavior:
+
+- rank movement may occur
+- no top-rank flip may occur
+- semantic winner and policy winner may remain the same
+
+### Query 2 — Trust-sensitive phrasing
+
+```powershell
+python main.py --query "trusted medical advice for fatigue"
+```
+
+Typical observed behavior:
+
+- rank flip detected
+- semantic winner and policy winner differ
+- policy weighting overrides semantic similarity
+
+Some queries produce no change.  
+Some queries produce measurable shifts.  
+RISWIS makes both visible.
+
+---
+
 ## Example Output (Rank Flip)
 
 ```json
 {
   "document_id": "doc_101",
-  "source_tier": "T2",
-  "raw_rank": 1,
-  "weighted_rank": 2,
-  "similarity_score": 0.91,
-  "multiplier": 1.0,
-  "final_score": 0.91
+  "source_tier": "T1",
+  "raw_rank": 4,
+  "weighted_rank": 1,
+  "similarity_score": 0.2493,
+  "multiplier": 1.5,
+  "final_score": 0.3739
 },
 {
   "document_id": "doc_104",
-  "source_tier": "T1",
-  "raw_rank": 2,
-  "weighted_rank": 1,
-  "similarity_score": 0.87,
-  "multiplier": 1.3,
-  "final_score": 1.13
+  "source_tier": "T2",
+  "raw_rank": 1,
+  "weighted_rank": 2,
+  "similarity_score": 0.3723,
+  "multiplier": 1.0,
+  "final_score": 0.3723
 }
 ```
 
 This shows a **policy override**:
 
-- semantic winner → `doc_101`
-- policy winner → `doc_104`
+- semantic winner → `doc_104`
+- policy winner → `doc_101`
 
 This is the core behavior of RISWIS.
 
@@ -234,13 +309,15 @@ Both remain visible.
 
 ### Setup failed
 
-Start clean:
+Delete the virtual environment and start clean:
 
 ```powershell
 Remove-Item -Recurse -Force .\.venv
 ```
 
-Then rebuild:
+Then recreate it.
+
+**Recommended (Python 3.11):**
 
 ```powershell
 py -3.11 -m venv .venv
@@ -248,6 +325,17 @@ py -3.11 -m venv .venv
 python --version
 pip install -r requirements.txt
 ```
+
+**Supported (Python 3.12):**
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python --version
+pip install -r requirements.txt
+```
+
+If 3.12 gives you problems, switch to 3.11.
 
 ---
 
@@ -257,24 +345,29 @@ pip install -r requirements.txt
 python --version
 ```
 
-If not 3.11 → delete `.venv` and recreate it.
+If the environment is not using the version you intended, delete `.venv` and recreate it with the correct `py -3.x -m venv .venv` command.
 
 ---
 
 ### ModuleNotFoundError
 
-Environment is broken. Reset it:
+The environment is likely broken or partially installed.
+
+Fix:
 
 ```powershell
 Remove-Item -Recurse -Force .\.venv
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 ---
 
 ### Chroma errors
+
+Delete the local vector store and rebuild it:
 
 ```powershell
 Remove-Item -Recurse -Force .\chroma_db

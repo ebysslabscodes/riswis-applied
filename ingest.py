@@ -1,7 +1,10 @@
+import os
+
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
 from sentence_transformers import SentenceTransformer
 import chromadb
 from chromadb.config import Settings
-import os
 from datetime import datetime, timezone
 
 # Load embedding model
@@ -12,6 +15,7 @@ client = chromadb.Client(
     Settings(
         is_persistent=True,
         persist_directory="./chroma_db",
+        anonymized_telemetry=False,
     )
 )
 

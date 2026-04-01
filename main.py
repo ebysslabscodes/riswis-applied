@@ -1,5 +1,8 @@
-from riswis.cli import main
 import os
+
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
+from riswis.cli import main
 from datetime import datetime
 
 
@@ -20,7 +23,6 @@ def check_docs_vs_ingest(docs_path="data/docs", ingest_file="last_ingest.txt"):
         if filename.endswith(".txt")
     )
 
-    # Compare naive times to avoid timezone mismatch issues
     if latest_doc_time > ingest_time.replace(tzinfo=None):
         print("⚠️ Documents changed since last ingest. Run `python ingest.py`.")
 
