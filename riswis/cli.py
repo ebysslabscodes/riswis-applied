@@ -127,14 +127,23 @@ def main() -> None:
 
     print()
 
-    if decision["flipped"]:
-        print("Rank flip detected")
-    else:
-        print("No rank flip detected")
+    top_score = ranked_results[0]["score"] if ranked_results else 0.0
+    low_confidence = top_score <= 0.0
 
-    print(f"Semantic winner: {decision['semantic_winner']}")
-    print(f"Policy winner:   {decision['policy_winner']}")
-    print(f"Reason:          {decision['reason']}")
+    if low_confidence:
+        print("Low-confidence retrieval detected")
+        print("No meaningful semantic match detected")
+        print("Reason: query did not produce a positive similarity score")
+    else:
+        if decision["flipped"]:
+            print("Rank flip detected")
+        else:
+            print("No rank flip detected")
+
+        print(f"Semantic winner: {decision['semantic_winner']}")
+        print(f"Policy winner:   {decision['policy_winner']}")
+        print(f"Reason:          {decision['reason']}")
+
     print()
     print("Wrote:")
     print("- ranked_results.json")

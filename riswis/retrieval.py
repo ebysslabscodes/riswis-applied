@@ -46,7 +46,7 @@ def retrieve(query: str, docs_path: str, tiers: Dict[str, str]) -> List[Dict]:
     output: List[Dict] = []
 
     for i in range(len(ids)):
-        score = 1 - distances[i]
+        score = max(0.0, 1 - distances[i])
 
         output.append(
             {
